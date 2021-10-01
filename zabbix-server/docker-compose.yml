@@ -1,0 +1,72 @@
+version: '3.2'
+
+services:
+  server:
+    image: zabbix/zabbix-server-pgsql:alpine-${ZABBIX_VERSION}-latest
+    depends_on:
+      - database
+    links:
+      - database
+    environment:
+      - DB_SERVER_HOST=database
+      - DB_SERVER_PORT=5432
+      - POSTGRES_USER=${ZABBIX_DB_USER}
+      - POSTGRES_PASSWORD=${ZABBIX_DB_PASSWORD}
+      - POSTGRES_DB=${ZABBIX_DB_DB}
+    ports:
+      - 10050:10050
+    restart: always
+    networks:
+      - zabbix
+
+  frontend:
+    image: zabbix/zabbix-web-nginx-pgsql:alpine-${ZABBIX_VERSION}-latest
+    depends_on:
+      - server
+    links:
+      - database
+      - server
+    environment:
+      - DB_SERVER_HOST=database
+      - POSTGRES_USER=${ZABBIX_DB_USER}
+      - POSTGRES_PASSWORD=${ZABBIX_DB_PASSWORD}
+      - POSTGRES_DB=${ZABBIX_DB_DB}
+      - ZBX_SERVER_HOST=server
+      - TZ=${ZABBIX_TIMEZONE}
+    ports:
+      - 80:8080
+      - 443:8443
+    restart: always
+    networks:
+      - zabbix
+
+  agent:
+    image: zabbix/zabbix-agent:alpine-${ZABBIX_VERSION}-latest
+    depends_on:
+      - server
+    environment:
+      - ZBX_HOSTNAME=zabbix-monitoring
+      - ZBX_SERVER_HOST=server
+    restart: always
+    networks:
+      - zabbix
+
+  database:
+    image: postgres:${PSQL_VERSION}-alpine
+    volumes:
+      - pgsqldata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${ZABBIX_DB_USER}
+      - POSTGRES_PASSWORD=${ZABBIX_DB_PASSWORD}
+      - POSTGRES_DB=${ZABBIX_DB_DB}
+    restart: always
+    networks:
+      - zabbix
+
+volumes:
+  pgsqldata:
+    driver: local
+
+networks:
+  zabbix:
+    driver: bridge

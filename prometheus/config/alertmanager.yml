@@ -1,0 +1,19 @@
+global:
+  resolve_timeout: 1m
+
+route:
+  receiver: 'mail-notifications'
+  repeat_interval: 24h
+  group_interval: 55s
+  group_wait: 55s
+  group_by: [job]
+
+receivers:
+- name: 'mail-notifications'
+  email_configs:
+  - to: alertmanager@server.com
+    from: alertmanager@server.com
+    smarthost: mail.server.com:587
+    auth_username: alertmanager@server.com
+    auth_password: password
+    send_resolved: true

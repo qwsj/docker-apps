@@ -1,0 +1,6 @@
+groups:
+- name: group-name
+  rules:
+  - alert: alert-name
+    expr: probe == 0
+    for: 10s
