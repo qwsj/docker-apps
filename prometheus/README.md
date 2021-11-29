@@ -7,6 +7,5 @@ chown 472:472 grafana/data
 
 Running:
 ```
-. ./environment
 docker-compose up -d
 ```
