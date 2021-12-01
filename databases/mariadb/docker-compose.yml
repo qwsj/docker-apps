@@ -1,0 +1,25 @@
+version: '3.2'
+
+services:
+  mariadb:
+    image: mariadb:${MARIADB_VERSION-10.7}
+    volumes:
+      - mariadbdata:/var/lib/mysql
+    environment:
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD-rootpassword}
+      - MARIADB_USER=${MARIADB_USER-user}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD-password}
+      - MARIADB_DATABASE=${MARIADB_NAME-database}
+    ports:
+      - 3306:3306
+    restart: unless-stopped
+    networks:
+      - databases
+
+volumes:
+  mariadbdata:
+    driver: local
+
+networks:
+  databases:
+    driver: bridge

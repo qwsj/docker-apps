@@ -1,0 +1,25 @@
+version: '3.2'
+
+services:
+  percona:
+    image: mysql:${PERCONA_VERSION-8.0}
+    volumes:
+      - perconadata:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD-rootpassword}
+      - MYSQL_USER=${MYSQL_USER-user}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD-password}
+      - MYSQL_DATABASE=${MYSQL_NAME-database}
+    ports:
+      - 3306:3306
+    restart: unless-stopped
+    networks:
+      - databases
+
+volumes:
+  perconadata:
+    driver: local
+
+networks:
+  databases:
+    driver: bridge
