@@ -1,0 +1,20 @@
+version: '3.2'
+
+services:
+  redis:
+    image: redis:${REDIS_VERSION-6.2-alpine}
+    volumes:
+      - redisdata:/var/lib/redis
+    ports:
+      - 6379:6379
+    restart: unless-stopped
+    networks:
+      - brokers
+
+volumes:
+  redisdata:
+    driver: local
+
+networks:
+  brokers:
+    driver: bridge

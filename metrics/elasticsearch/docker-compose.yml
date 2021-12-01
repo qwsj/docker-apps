@@ -1,0 +1,61 @@
+version: '3.2'
+
+services:
+  elasticsearch:
+    image: elasticsearch:${ELASTIC_VERSION-7.14.2}
+    volumes:
+      - $PWD/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - elasticdata:/usr/share/elasticsearch/data
+    environment:
+      - ES_JAVA_OPTS=${ES_JAVA_OPTS--Xmx512m -Xms512m}
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD-password}
+      - discovery.type=${ELASTIC_DISCOVERY_TYPE-single-node}
+      - cluster.name=${ELASTIC_CLUSTER_NAME-docker-cluster}
+      - network.host=${ELASTIC_HOST-0.0.0.0}
+    ports:
+      - 9200:9200
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - elasticsearch
+
+  logstash:
+    image: logstash:${LOGSTASH_VERSION-7.14.2}
+    volumes:
+      - $PWD/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - $PWD/config/logstash-pipelines:/usr/share/logstash/pipeline
+    environment:
+      - LS_JAVA_OPTS=${LS_JAVA_OPTS--Xmx512m -Xms512m}
+      - http.host=${LOGSTASH_HOST-0.0.0.0}
+      - config.reload.automatic=${LOGSTASH_CONFIG_RELOAD-true}
+      - config.reload.interval=${LOGSTASH_CONFIG_RELOAD_INTERVAL-15s}
+    ports:
+      - 5044:5044
+      - 9600:9600
+    depends_on:
+      - elasticsearch
+    networks:
+      - elasticsearch
+
+  kibana:
+    image: kibana:${KIBANA_VERSION-7.14.2}
+    volumes:
+      - $PWD/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    environment:
+      - server.host=${KIBANA_HOST-0.0.0.0}
+    ports:
+      - 5601:5601
+    networks:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+
+volumes:
+  elasticdata:
+    driver: local
+
+networks:
+  elasticsearch:
+    driver: bridge

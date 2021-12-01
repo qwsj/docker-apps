@@ -4,9 +4,9 @@ services:
   prometheus:
     image: prom/prometheus:${PROMETHEUS_VERSION-latest}
     volumes:
-      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./config/alert.rules.yml://etc/prometheus/alert.rules.yml
-      - prometheus:/prometheus
+      - $PWD/config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - $PWD/config/alert.rules.yml://etc/prometheus/alert.rules.yml
+      - prometheusdata:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--web.route-prefix=/'
@@ -21,7 +21,7 @@ services:
   alertmanager:
     image: prom/alertmanager:${ALERTMANAGER_VERSION-latest}
     volumes:
-      - ./config/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+      - $PWD/config/alertmanager.yml:/etc/alertmanager/alertmanager.yml
     command:
       - '--config.file=/etc/alertmanager/alertmanager.yml'
       - '--storage.path=/alertmanager'
@@ -40,19 +40,17 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_SMTP_ENABLED=false
     volumes:
-      - grafana:/var/lib/grafana
+      - grafanadata:/var/lib/grafana
     ports:
       - 3000:3000
-    links:
-      - prometheus:prometheus
     restart: unless-stopped
     networks:
       - prometheus
 
 volumes:
-  prometheus:
+  prometheusdata:
     driver: local
-  grafana:
+  grafanadata:
     driver: local
 
 networks:

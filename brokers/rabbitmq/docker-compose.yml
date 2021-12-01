@@ -1,0 +1,24 @@
+version: '3.2'
+
+services:
+  rabbitmq:
+    image: rabbitmq:${RABBITMQ_VERSION-3.9-management-alpine}
+    volumes:
+        - rabbitmqdata:/var/lib/rabbitmq
+    environment:
+    - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER-admin}
+    - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD-password}
+    ports:
+      - 5672:5672
+      - 15672:15672
+    restart: unless-stopped
+    networks:
+      - brokers
+
+volumes:
+  rabbitmqdata:
+    driver: local
+
+networks:
+  brokers:
+    driver: bridge

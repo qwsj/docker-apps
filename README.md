@@ -2,7 +2,7 @@
 
 | Applications    | Description |
 |-----------------|-------------|
-| prometheus      | Prometheus, Alertmanager, Grafana |
-| zabbix-server   | Zabbix-Server, Zabbix-Frontend, PostgreSQL |
+| metrics         | Prometheus, Grafana, Zabbix server, ELK stack |
 | exporters       | Blackbox, Node |
 | databases       | MySQL, MariaDB, Percona, PostgreSQL, MongoDB |
+| brokers         | Redis, RabbitMQ |
