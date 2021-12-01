@@ -2,24 +2,24 @@ version: '3.2'
 
 services:
   prometheus:
-    image: prom/prometheus:v${PROMETHEUS_VERSION}
+    image: prom/prometheus:${PROMETHEUS_VERSION-latest}
     volumes:
       - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./config/alert.rules.yml://etc/prometheus/alert.rules.yml
-      - ./prometheus:/prometheus
+      - prometheus:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--web.route-prefix=/'
-      - '--storage.tsdb.retention.time=${PROMETHEUS_RETENTION}'
+      - '--storage.tsdb.retention.time=${PROMETHEUS_RETENTION-30d}'
       - '--web.enable-lifecycle'
     ports:
       - 9090:9090
-    restart: always
+    restart: unless-stopped
     networks:
       - prometheus
 
   alertmanager:
-    image: prom/alertmanager:v${ALERTMANAGER_VERSION}
+    image: prom/alertmanager:${ALERTMANAGER_VERSION-latest}
     volumes:
       - ./config/alertmanager.yml:/etc/alertmanager/alertmanager.yml
     command:
@@ -29,23 +29,31 @@ services:
       - 9091:9091
     depends_on:
       - prometheus
-    restart: always
+    restart: unless-stopped
     networks:
       - prometheus
 
   grafana:
-    image: grafana/grafana:${GRAFANA_VERSION}
+    image: grafana/grafana:${GRAFANA_VERSION-latest}
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=password
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SMTP_ENABLED=false
     volumes:
-      - ./grafana/data:/var/lib/grafana
+      - grafana:/var/lib/grafana
     ports:
       - 3000:3000
     links:
       - prometheus:prometheus
-    depends_on:
-      - prometheus
     restart: unless-stopped
     networks:
       - prometheus
+
+volumes:
+  prometheus:
+    driver: local
+  grafana:
+    driver: local
 
 networks:
   prometheus:
