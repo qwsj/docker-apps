@@ -10,8 +10,8 @@ services:
       - 8181:8181
     restart: always
     networks:
-      - proxy
+      - proxys
 
 networks:
-  proxy:
+  proxys:
     driver: bridge
