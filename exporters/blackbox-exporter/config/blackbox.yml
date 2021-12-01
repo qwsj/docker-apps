@@ -1,0 +1,15 @@
+modules:
+  http_2xx:
+    prober: http
+    timeout: 10s
+    http:
+      valid_status_codes: [] # Defaults to 2xx
+      method: GET
+      fail_if_ssl: false # skip fail if ssl presetn
+      fail_if_not_ssl: true # fail if ssl notpresetn
+      tls_config:
+        insecure_skip_verify: false # verify ssl
+      preferred_ip_protocol: "ip4" # defaults to "ip6"
+      ip_protocol_fallback: false  # no fallback to "ip6"
+      fail_if_body_not_matches_regexp:
+        - "string"
