@@ -5,3 +5,4 @@
 | prometheus      | Prometheus, Alertmanager, Grafana |
 | zabbix-server   | Zabbix-Server, Zabbix-Frontend, PostgreSQL |
 | exporters       | Blackbox, Node |
+| databases       | MySQL, MariaDB, Percona, PostgreSQL, MongoDB |
