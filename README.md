@@ -6,3 +6,4 @@
 | exporters       | Blackbox, Node |
 | databases       | MySQL, MariaDB, Percona, PostgreSQL, MongoDB |
 | brokers         | Redis, RabbitMQ |
+| proxy           | Nginx, HaProxy |

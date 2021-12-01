@@ -1,0 +1,17 @@
+version: '3.2'
+
+services:
+  haproxy:
+    image: haproxy:${HAPROXY_VERSION-2.5-alpine}
+    volumes:
+      - $PWD/config/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    ports:
+      - 8080:8080
+      - 8181:8181
+    restart: always
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    driver: bridge
