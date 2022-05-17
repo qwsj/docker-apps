@@ -1,0 +1,21 @@
+version: '3.2'
+
+services:
+  nexus:
+    image: sonatype/nexus3:${NEXUS_VERSION-latest}
+    volumes:
+      - nexusdata:/nexus-data
+    ports:
+      - 8081:8081
+      - 8084-8089:8084-8089
+    restart: unless-stopped
+    networks:
+      - nexus
+
+volumes:
+  nexusdata:
+    driver: local
+
+networks:
+  nexus:
+    driver: bridge
