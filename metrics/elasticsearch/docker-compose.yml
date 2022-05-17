@@ -2,7 +2,7 @@ version: '3.2'
 
 services:
   elasticsearch:
-    image: elasticsearch:${ELASTIC_VERSION-7.14.2}
+    image: elasticsearch:${ELASTIC_VERSION-7.17.3}
     volumes:
       - $PWD/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - elasticdata:/usr/share/elasticsearch/data
@@ -22,7 +22,7 @@ services:
       - elasticsearch
 
   logstash:
-    image: logstash:${LOGSTASH_VERSION-7.14.2}
+    image: logstash:${LOGSTASH_VERSION-7.17.3}
     volumes:
       - $PWD/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - $PWD/config/logstash-pipelines:/usr/share/logstash/pipeline
@@ -32,6 +32,8 @@ services:
       - config.reload.automatic=${LOGSTASH_CONFIG_RELOAD-true}
       - config.reload.interval=${LOGSTASH_CONFIG_RELOAD_INTERVAL-15s}
     ports:
+      - 5000:5000/tcp
+      - 5000:5000/udp
       - 5044:5044
       - 9600:9600
     depends_on:
@@ -40,7 +42,7 @@ services:
       - elasticsearch
 
   kibana:
-    image: kibana:${KIBANA_VERSION-7.14.2}
+    image: kibana:${KIBANA_VERSION-7.17.3}
     volumes:
       - $PWD/config/kibana.yml:/usr/share/kibana/config/kibana.yml
     environment:
