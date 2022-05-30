@@ -1,8 +1,8 @@
-version: '3.2'
+cversion: '3.2'
 
 services:
   zabbix-server:
-    image: zabbix/zabbix-server-pgsql:alpine-${ZABBIX_VERSION-5.4}-latest
+    image: zabbix/zabbix-server-pgsql:alpine-${ZABBIX_VERSION-6.0}-latest
     depends_on:
       - zabbix-database
     environment:
@@ -18,7 +18,7 @@ services:
       - zabbix
 
   zabbix-frontend:
-    image: zabbix/zabbix-web-nginx-pgsql:alpine-${ZABBIX_VERSION-5.4}-latest
+    image: zabbix/zabbix-web-nginx-pgsql:alpine-${ZABBIX_VERSION-6.0}-latest
     depends_on:
       - zabbix-server
     environment:
@@ -29,8 +29,8 @@ services:
       - ZBX_SERVER_HOST=zabbix-server
       - TZ=${ZABBIX_TIMEZONE-Europe/Bucharest}
     ports:
-      - 80:8080
-      - 443:8443
+      - 8080:8080
+      - 8443:8443
     restart: unless-stopped
     networks:
       - zabbix
