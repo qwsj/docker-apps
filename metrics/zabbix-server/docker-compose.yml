@@ -1,22 +1,6 @@
 cversion: '3.2'
 
 services:
-  zabbix-server:
-    image: zabbix/zabbix-server-pgsql:alpine-${ZABBIX_VERSION-6.0}-latest
-    depends_on:
-      - zabbix-database
-    environment:
-      - DB_SERVER_HOST=zabbix-database
-      - DB_SERVER_PORT=5432
-      - POSTGRES_USER=${ZABBIX_DB_USER-zabbix-user}
-      - POSTGRES_PASSWORD=${ZABBIX_DB_PASSWORD-zabbix-password}
-      - POSTGRES_DB=${ZABBIX_DB_DB-zabbix}
-    ports:
-      - 10050:10050
-    restart: unless-stopped
-    networks:
-      - zabbix
-
   zabbix-frontend:
     image: zabbix/zabbix-web-nginx-pgsql:alpine-${ZABBIX_VERSION-6.0}-latest
     depends_on:
@@ -32,6 +16,28 @@ services:
       - 8080:8080
       - 8443:8443
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-O-", "http://zabbix-frontend:8080"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - zabbix
+
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:alpine-${ZABBIX_VERSION-6.0}-latest
+    depends_on:
+      zabbix-database:
+        condition: service_healthy
+    environment:
+      - DB_SERVER_HOST=zabbix-database
+      - DB_SERVER_PORT=5432
+      - POSTGRES_USER=${ZABBIX_DB_USER-zabbix-user}
+      - POSTGRES_PASSWORD=${ZABBIX_DB_PASSWORD-zabbix-password}
+      - POSTGRES_DB=${ZABBIX_DB_DB-zabbix}
+    ports:
+      - 10050:10050
+    restart: unless-stopped
     networks:
       - zabbix
 
@@ -44,6 +50,11 @@ services:
       - POSTGRES_PASSWORD=${ZABBIX_DB_PASSWORD-zabbix-password}
       - POSTGRES_DB=${ZABBIX_DB_DB-zabbix}
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${ZABBIX_DB_PASSWORD-zabbix-password}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - zabbix
 
