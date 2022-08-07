@@ -4,9 +4,9 @@ services:
   blackbox-exporter:
     image: prom/blackbox-exporter:${BLACKBOX_EXPORTER_VERSION-latest}
     volumes:
-      - $PWD/config/blackbox.yml:/etc/blackbox_exporter/blackbox.yml
+      - $PWD/config/blackbox.yml:/etc/blackbox_exporter/config.yml
     command:
-      - '--config.file=/etc/blackbox_exporter/blackbox.yml'
+      - '--config.file=/etc/blackbox_exporter/config.yml'
       - '--history.limit=0'
     ports:
       - 9115:9115
