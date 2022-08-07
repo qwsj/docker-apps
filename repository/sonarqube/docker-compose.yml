@@ -1,0 +1,47 @@
+version: '3.2'
+
+services:
+  sonarqube:
+    image: sonarqube:${SONARQUBE_VERSION-9.5-community}
+    volumes:
+      - $PWD/sonarqube/data:/opt/sonarqube/data
+      - $PWD/sonarqube/extensions:/opt/sonarqube/extensions
+      - $PWD/sonarqube/logs:/opt/sonarqube/logs
+      - $PWD/sonarqube/temp:/opt/sonarqube/temp
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://postgresql:5432/${PGSQL_DB_NAME-sonar}
+      SONAR_JDBC_USERNAME: ${PGSQL_USERNAME-sonar}
+      SONAR_JDBC_PASSWORD: ${PGSQL_PASSWORD-sonar}
+    depends_on:
+      - postgresql
+    ports:
+      - 9000:9000
+    networks:
+      - sonarqube
+
+  postgresql:
+    image: postgres:${PGSQL_VERSION-14}-alpine
+    volumes:
+      - pgsqldata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${PGSQL_USERNAME-sonar}
+      - POSTGRES_PASSWORD=${PGSQL_PASSWORD-sonar}
+      - POSTGRES_DB=${PGSQL_DB_NAME-sonar}
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PGSQL_PASSWORD-password}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sonarqube
+
+volumes:
+  pgsqldata:
+    driver: local
+
+networks:
+  sonarqube:
+    driver: bridge

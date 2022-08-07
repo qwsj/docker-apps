@@ -7,4 +7,4 @@
 | databases       | MySQL, MariaDB, Percona, PostgreSQL, MongoDB |
 | brokers         | Redis, RabbitMQ |
 | proxys          | Nginx, HaProxy |
-| repository      | Nexus |
+| repository      | Nexus, Sonarqube |
