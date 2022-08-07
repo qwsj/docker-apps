@@ -1,0 +1,26 @@
+version: '3.2'
+
+services:
+  gitlab-ci-exporter:
+    image: mvisonneau/gitlab-ci-pipelines-exporter:${GITLAB_CI_EXPORTER_VERSION-latest}
+    volumes:
+      - $PWD/config/gitlab-ci.yml:/etc/gitlab_ci_exporter/config.yml
+    environment:
+      GCPE_CONFIG: /etc/gitlab_ci_exporter/config.yml
+      GCPE_INTERNAL_MONITORING_LISTENER_ADDRESS: tcp://127.0.0.1:8082
+    ports:
+      - 8080:8080
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+      - 8.8.8.8
+      - 8.8.4.4
+      - 208.67.222.222
+      - 208.67.220.220
+    restart: unless-stopped
+    networks:
+      - exporters
+
+networks:
+  exporters:
+    driver: bridge
