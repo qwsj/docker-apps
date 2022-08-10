@@ -1,0 +1,41 @@
+version: '3.2'
+
+services:
+  gitlab:
+    image: gitlab/gitlab-ce:latest
+    restart: always
+    hostname: git.example.com
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        # External URL
+        external_url 'http://git.example.com'
+        # Pages URL
+        pages_external_url 'https://pages.example.com'
+        # Registry settings
+        registry['enable'] = true
+        registry_external_url 'https://cr.example.com'
+        registry_nginx['enable'] = true
+        registry_nginx['listen_port'] = 443
+        nginx['redirect_http_to_https'] = true
+        # TZ settings
+        gitlab_rails['time_zone'] = 'UTC'
+        # LetsEncrypt settings
+        letsencrypt['enable'] = true
+        letsencrypt['auto_renew'] = true
+        letsencrypt['contact_emails'] = ['le@example.com']
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - $PWD/config:/etc/gitlab
+      - $PWD/logs:/var/log/gitlab
+      - $PWD/data:/var/opt/gitlab
+    logging:
+      options:
+        max-size: 300m
+    networks:
+      - gitlab
+
+networks:
+  gitlab:
+    driver: bridge
