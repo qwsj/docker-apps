@@ -4,10 +4,10 @@ services:
   rabbitmq:
     image: rabbitmq:${RABBITMQ_VERSION-3.9-management-alpine}
     volumes:
-        - rabbitmqdata:/var/lib/rabbitmq
+      - rabbitmqdata:/var/lib/rabbitmq
     environment:
-    - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER-admin}
-    - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD-password}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER-admin}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD-password}
     ports:
       - 5672:5672
       - 15672:15672

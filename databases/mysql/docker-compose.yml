@@ -6,10 +6,10 @@ services:
     volumes:
       - mysqldata:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD-rootpassword}
-      - MYSQL_USER=${MYSQL_USERNAME-user}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD-password}
-      - MYSQL_DATABASE=${MYSQL_DB_NAME-database}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD-rootpassword}
+      MYSQL_USER: ${MYSQL_USERNAME-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD-password}
+      MYSQL_DATABASE: ${MYSQL_DB_NAME-database}
     ports:
       - 3306:3306
     restart: unless-stopped

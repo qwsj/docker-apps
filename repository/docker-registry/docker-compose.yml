@@ -1,0 +1,23 @@
+version: '3.2'
+
+services:
+  registry:
+    image: registry:${REGISTRY_VERSION-2}
+    environment:
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /var/lib/registry
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: registry realm
+      REGISTRY_PROXY_REMOUTEURL: https://registry-1.docker.io
+    volumes:
+      - $PWD/registry:/var/lib/registry
+      - $PWD/htpasswd:/auth/htpasswd
+    ports:
+      - 5000:5000
+    restart: unless-stopped
+    networks:
+      - registry
+
+networks:
+  registry:
+    driver: bridge

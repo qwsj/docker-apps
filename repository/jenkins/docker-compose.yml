@@ -1,0 +1,20 @@
+version: '3.2'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:${JENKINS_VERSION-lts}
+    volumes:
+      - $PWD/config:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    privileged: true
+    user: root
+    restart: always
+    ports:
+      - 8080:8080
+      - 50000:50000
+    networks:
+      - jenkins
+
+networks:
+  jenkins:
+    driver: bridge

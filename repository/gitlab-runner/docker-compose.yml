@@ -1,0 +1,15 @@
+version: '3.2'
+
+services:
+  gitlab-runner:
+    image: gitlab/gitlab-runner:${GITLAB_RUNNER_VERSION-latest}
+    volumes:
+      - $PWD/config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    networks:
+      - gitlab
+
+networks:
+  gitlab:
+    driver: bridge

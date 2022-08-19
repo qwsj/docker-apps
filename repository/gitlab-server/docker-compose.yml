@@ -8,9 +8,7 @@ services:
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         # External URL
-        external_url 'http://git.example.com'
-        # Pages URL
-        pages_external_url 'https://pages.example.com'
+        external_url 'https://git.example.com'
         # Registry settings
         registry['enable'] = true
         registry_external_url 'https://cr.example.com'

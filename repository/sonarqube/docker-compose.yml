@@ -24,9 +24,9 @@ services:
     volumes:
       - pgsqldata:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=${PGSQL_USERNAME-sonar}
-      - POSTGRES_PASSWORD=${PGSQL_PASSWORD-sonar}
-      - POSTGRES_DB=${PGSQL_DB_NAME-sonar}
+      POSTGRES_USER: ${PGSQL_USERNAME-sonar}
+      POSTGRES_PASSWORD: ${PGSQL_PASSWORD-sonar}
+      POSTGRES_DB: ${PGSQL_DB_NAME-sonar}
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${PGSQL_PASSWORD-password}"]
