@@ -1,0 +1,16 @@
+version: '3.2'
+
+services:
+  tomcat:
+    image: tomcat:${TOMCAT_VERSION-11.0}
+    volumes:
+      - $PWD/webapps:/usr/local/tomcat/webapps
+    ports:
+      - 8080:8080
+    restart: always
+    networks:
+      - tomcat
+
+networks:
+  tomcat:
+    driver: bridge
